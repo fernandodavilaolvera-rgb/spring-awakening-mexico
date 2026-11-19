@@ -10,18 +10,20 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{--papel:#f4f1ea;--tinta:#2a2622;--tinta2:#5d5750;--gris:#9a938a;--linea:#ddd6ca;--blanco:#fffdf8;
-    --azul:#8aa5b5;--azul-osc:#3f5866;--azul-claro:#e3ebef;--rosa:#d4aab1;--rosa-claro:#f3e6e8;--arena:#cdbb9c;--arena-claro:#efe7d8;--ok:#4f7a5a;--error:#a2463f}
+    --azul:#8aa5b5;--azul-osc:#3f5866;--azul-claro:#e3ebef;--rosa:#d4aab1;--rosa-osc:#b5655c;--rosa-claro:#f3e6e8;--arena:#cdbb9c;--arena-claro:#efe7d8;--ok:#4f7a5a;--ok-claro:#e2ece4;--error:#a2463f;--oro:#c9952f}
   *{box-sizing:border-box;margin:0;padding:0}
   body{font-family:'Manrope',sans-serif;color:var(--tinta);background:var(--papel);
     background-image:radial-gradient(rgba(120,100,80,.05) 1px,transparent 1px);background-size:4px 4px;line-height:1.5;min-height:100vh}
-  .wrap{max-width:720px;margin:0 auto;padding:0 1rem 4rem}
+  .wrap{max-width:720px;margin:0 auto;padding:0 1rem 6rem}
   .serif{font-family:'Cormorant Garamond',serif}
-  button{font:inherit;cursor:pointer}
-  input,select{font:inherit;font-size:15px;color:var(--tinta);background:var(--blanco);border:1px solid var(--linea);border-radius:10px;padding:.7rem .9rem;outline:none;width:100%;min-height:46px;-webkit-appearance:none;appearance:none}
-  input:focus,select:focus{border-color:var(--azul-osc);box-shadow:0 0 0 3px rgba(63,88,102,.12)}
+  button{font:inherit;cursor:pointer;color:inherit}
+  input,select,textarea{font:inherit;font-size:15px;color:var(--tinta);background:var(--blanco);border:1px solid var(--linea);border-radius:10px;padding:.7rem .9rem;outline:none;width:100%;min-height:46px;-webkit-appearance:none;appearance:none}
+  textarea{min-height:70px;resize:vertical}
+  input:focus,select:focus,textarea:focus{border-color:var(--azul-osc);box-shadow:0 0 0 3px rgba(63,88,102,.12)}
   label.et{display:block;font-size:13px;font-weight:700;margin:0 0 .4rem}
-  .btn{background:var(--tinta);color:var(--blanco);border:0;border-radius:999px;padding:.8rem 1.4rem;font-weight:700;font-size:14px;letter-spacing:.5px}
+  .btn{background:var(--tinta);color:var(--blanco);border:0;border-radius:999px;padding:.75rem 1.3rem;font-weight:700;font-size:14px;letter-spacing:.3px;white-space:nowrap}
   .btn.sec{background:transparent;color:var(--tinta);border:1px solid var(--tinta)}
+  .btn.peq{padding:.45rem .9rem;font-size:13px}
   .btn:disabled{opacity:.5;cursor:wait}
   .msg{font-size:13px;font-weight:600;margin-top:.7rem;min-height:1.2em}
   .msg.mal{color:var(--error)} .msg.bien{color:var(--ok)}
@@ -30,50 +32,140 @@
   #login{display:none;max-width:380px;margin:0 auto;padding:4rem 1rem}
   #login h1{font-size:2.6rem;font-weight:600;text-align:center;line-height:1}
   #login .sub{text-align:center;color:var(--tinta2);font-size:12px;letter-spacing:3px;text-transform:uppercase;margin:.6rem 0 2rem}
-  .tarjeta{background:var(--blanco);border:1px solid var(--linea);border-radius:16px;padding:1.6rem}
+  .tarjeta{background:var(--blanco);border:1px solid var(--linea);border-radius:16px;padding:1.4rem}
   .tarjeta .campo{margin-bottom:1rem}
 
-  /* App */
+  /* Barra */
   #app{display:none}
-  .barra{position:sticky;top:0;z-index:10;background:rgba(244,241,234,.94);backdrop-filter:blur(6px);border-bottom:1px solid var(--linea)}
-  .barra .wrap{display:flex;align-items:center;gap:.8rem;padding:.7rem 1rem;flex-wrap:wrap}
-  .marca{font-size:1.5rem;font-weight:600;line-height:1;margin-right:auto}
-  .turno-chip{background:var(--tinta);color:var(--blanco);border-radius:999px;padding:.35rem .9rem;font-size:13px;font-weight:700}
+  .barra{position:sticky;top:0;z-index:20;background:rgba(244,241,234,.95);backdrop-filter:blur(6px);border-bottom:1px solid var(--linea)}
+  .barra .wrap{display:flex;align-items:center;gap:.7rem;padding:.7rem 1rem;position:relative}
+  .marca{font-size:1.45rem;font-weight:600;line-height:1;margin-right:auto}
+  .turno-chip{background:var(--tinta);color:var(--blanco);border-radius:999px;padding:.35rem .9rem;font-size:13px;font-weight:700;white-space:nowrap}
   .menu-btn{background:none;border:1px solid var(--linea);border-radius:999px;padding:.35rem .8rem;font-size:13px;font-weight:600;color:var(--tinta2)}
-  nav.tabs{display:flex;gap:.3rem;overflow-x:auto;padding:0 1rem .6rem;max-width:720px;margin:0 auto;scrollbar-width:none}
-  nav.tabs button{background:none;border:0;font-size:14px;font-weight:600;color:var(--gris);padding:.45rem .9rem;border-radius:999px;white-space:nowrap}
+  nav.tabs{display:flex;gap:.25rem;overflow-x:auto;padding:0 1rem .6rem;max-width:720px;margin:0 auto;scrollbar-width:none}
+  nav.tabs::-webkit-scrollbar{display:none}
+  nav.tabs button{background:none;border:0;font-size:14px;font-weight:600;color:var(--gris);padding:.45rem .85rem;border-radius:999px;white-space:nowrap}
   nav.tabs button.on{color:var(--tinta);background:var(--blanco);box-shadow:0 0 0 1px var(--linea)}
-  .vista{display:none;padding-top:1.6rem}
+  .menu{position:absolute;right:1rem;top:3.2rem;background:var(--blanco);border:1px solid var(--linea);border-radius:12px;box-shadow:0 10px 24px rgba(42,38,34,.12);display:none;min-width:210px;overflow:hidden;z-index:30}
+  .menu.on{display:block}
+  .menu button{display:block;width:100%;text-align:left;background:none;border:0;padding:.8rem 1rem;font-size:14px;font-weight:600}
+  .menu button:hover{background:var(--papel)}
+  .menu .quien{padding:.8rem 1rem;font-size:12px;color:var(--gris);border-bottom:1px solid var(--linea)}
+
+  .vista{display:none;padding-top:1.5rem}
   .vista.on{display:block}
   h2{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:600;line-height:1.1;margin-bottom:.3rem}
-  .ayuda{color:var(--tinta2);font-size:14px;margin-bottom:1.2rem}
+  .ayuda{color:var(--tinta2);font-size:14px;margin-bottom:1.1rem}
+  .seccion-t{font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--tinta2);margin:1.8rem 0 .8rem}
+  .vacio{text-align:center;color:var(--gris);font-size:14px;padding:2rem 1rem}
 
-  /* Lobby */
-  .buscador{position:relative;margin-bottom:1.2rem}
-  .buscador input{padding-left:2.6rem;font-size:17px;min-height:54px;border-radius:999px}
+  /* Control de turno */
+  .control{display:flex;align-items:center;gap:.6rem;background:var(--blanco);border:1px solid var(--linea);border-radius:16px;padding:.8rem 1rem;margin-bottom:1.1rem;flex-wrap:wrap}
+  .control .lbl{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--tinta2)}
+  .control .n{font-family:'Cormorant Garamond',serif;font-size:2.4rem;font-weight:600;line-height:1}
+  .control .esp{margin-right:auto}
+  .control .ir{width:86px;min-height:38px;padding:.4rem .6rem;text-align:center;font-weight:700}
+
+  /* Buscador */
+  .buscador{position:relative;margin-bottom:1.1rem}
+  .buscador input{padding-left:2.6rem;font-size:16px;min-height:50px;border-radius:999px}
   .buscador svg{position:absolute;left:1rem;top:50%;transform:translateY(-50%);opacity:.5}
-  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.9rem}
+
+  /* Fichas (tarjetas) */
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.85rem}
   .ficha{background:var(--blanco);border:1px solid var(--linea);border-radius:4px 14px 14px 14px;overflow:hidden;text-align:left;padding:0;position:relative;transition:transform .12s, box-shadow .12s}
   .ficha:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(42,38,34,.08)}
+  .ficha.actual{box-shadow:0 0 0 3px var(--rosa-osc)}
   .ficha .foto{aspect-ratio:3/4;background:var(--arena-claro);display:flex;align-items:center;justify-content:center;color:var(--gris);font-family:'Cormorant Garamond',serif;font-size:2rem}
   .ficha .foto img{width:100%;height:100%;object-fit:cover}
-  .ficha .info{padding:.6rem .75rem .75rem}
-  .ficha .nom{font-weight:700;font-size:14px;line-height:1.25}
+  .ficha .info{padding:.55rem .7rem .7rem}
+  .ficha .nom{font-weight:700;font-size:13.5px;line-height:1.25}
   .ficha .tes{font-size:12px;color:var(--gris)}
+  .ficha .mis{font-size:12px;font-weight:700;margin-top:.25rem;color:var(--oro)}
+  .ficha .mis .c{color:var(--rosa-osc)}
   .num{position:absolute;top:.5rem;left:.5rem;background:var(--tinta);color:var(--blanco);font-weight:700;font-size:13px;border-radius:999px;min-width:2rem;height:2rem;display:flex;align-items:center;justify-content:center;padding:0 .5rem}
-  .vacio{text-align:center;color:var(--gris);font-size:14px;padding:2rem 1rem}
-  .seccion-t{font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--tinta2);margin:2rem 0 .8rem}
+  .ahora{position:absolute;top:.5rem;right:.5rem;background:var(--rosa-osc);color:#fff;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;border-radius:999px;padding:.2rem .5rem}
 
-  /* Modal */
-  .velo{position:fixed;inset:0;background:rgba(42,38,34,.45);display:none;align-items:center;justify-content:center;padding:1rem;z-index:50}
+  /* Grupos */
+  .grupos{display:grid;grid-template-columns:repeat(3,1fr);gap:.85rem}
+  .grupo{background:var(--blanco);border:1px solid var(--linea);border-radius:4px 14px 14px 14px;padding:.8rem;text-align:left;position:relative}
+  .grupo.on{box-shadow:0 0 0 2px var(--tinta)}
+  .grupo .t{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:600}
+  .grupo .r{font-size:12px;color:var(--tinta2)}
+  .grupo .caras{display:flex;margin-top:.5rem}
+  .grupo .caras span{width:28px;height:28px;border-radius:50%;background:var(--blanco);border:2px solid var(--blanco);margin-left:-6px;overflow:hidden;display:block}
+  .grupo .caras span:first-child{margin-left:0}
+  .grupo .caras img{width:100%;height:100%;object-fit:cover}
+  .grupo:nth-child(4n+1){background:var(--azul-claro)} .grupo:nth-child(4n+2){background:var(--rosa-claro)}
+  .grupo:nth-child(4n+3){background:var(--arena-claro)} .grupo:nth-child(4n+4){background:var(--ok-claro)}
+
+  /* Tabla corte */
+  .barra-corte{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin-bottom:1rem}
+  .seg{display:inline-flex;background:var(--blanco);border:1px solid var(--linea);border-radius:999px;padding:3px;flex-wrap:wrap}
+  .seg button{border:0;background:none;border-radius:999px;padding:.4rem .9rem;font-size:13px;font-weight:700;color:var(--gris)}
+  .seg button.on{background:var(--tinta);color:var(--blanco)}
+  .resumen-corte{font-size:14px;color:var(--tinta2);margin-bottom:.8rem}
+  .resumen-corte b{color:var(--tinta)}
+  .tabla-w{background:var(--blanco);border:1px solid var(--linea);border-radius:14px;overflow-x:auto}
+  table{width:100%;border-collapse:collapse;font-size:13.5px}
+  th{text-align:left;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--gris);font-weight:700;padding:.65rem .7rem;border-bottom:1px solid var(--linea);background:var(--papel);white-space:nowrap}
+  td{padding:.55rem .7rem;border-bottom:1px solid var(--linea);vertical-align:middle}
+  tr:last-child td{border-bottom:0}
+  tr.pasa td{background:var(--ok-claro)}
+  td .lnk{background:none;border:0;font-weight:700;text-align:left;padding:0}
+  .tg{width:44px;height:26px;border-radius:999px;border:0;background:var(--linea);position:relative;transition:background .15s}
+  .tg::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:left .15s}
+  .tg.on{background:var(--ok)} .tg.on::after{left:21px}
+  .linea-corte td{background:var(--rosa-claro)!important;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--rosa-osc);text-align:center;padding:.3rem}
+
+  /* Modales */
+  .velo{position:fixed;inset:0;background:rgba(42,38,34,.45);display:none;align-items:flex-start;justify-content:center;padding:1rem;z-index:50;overflow-y:auto}
   .velo.on{display:flex}
-  .modal{background:var(--blanco);border-radius:18px;max-width:420px;width:100%;padding:1.8rem;text-align:center}
-  .modal .foto-m{width:140px;height:186px;margin:0 auto 1rem;border-radius:10px;overflow:hidden;background:var(--arena-claro)}
-  .modal .foto-m img{width:100%;height:100%;object-fit:cover}
-  .modal h3{font-family:'Cormorant Garamond',serif;font-size:1.9rem;font-weight:600;line-height:1.1}
-  .modal .acciones{display:flex;gap:.6rem;justify-content:center;margin-top:1.4rem;flex-wrap:wrap}
-  .numero-grande{font-family:'Cormorant Garamond',serif;font-size:6rem;font-weight:600;line-height:1;margin:.6rem 0}
+  .modal{background:var(--blanco);border-radius:18px;max-width:560px;width:100%;padding:1.6rem;margin:auto;position:relative}
+  .cerrar-x{position:absolute;top:.8rem;right:.8rem;width:36px;height:36px;border-radius:50%;border:1px solid var(--linea);background:var(--blanco);font-size:16px;line-height:1}
+  .cab{display:flex;gap:1rem;align-items:flex-start}
+  .cab .foto-m{width:120px;height:160px;border-radius:10px;overflow:hidden;background:var(--arena-claro);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:2rem;color:var(--gris)}
+  .cab .foto-m img{width:100%;height:100%;object-fit:cover}
+  .cab h3{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:600;line-height:1.05;padding-right:2rem}
+  .cab .sub{font-size:13px;color:var(--tinta2);margin-top:.3rem}
+  .cab .badge{display:inline-block;background:var(--tinta);color:#fff;border-radius:999px;font-weight:700;font-size:13px;padding:.2rem .7rem;margin-bottom:.4rem}
+  .bloque-m{border-top:1px solid var(--linea);margin-top:1.1rem;padding-top:1rem}
+  .bloque-m .t{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--tinta2);margin-bottom:.6rem}
+  .estrellas{display:flex;gap:.3rem;align-items:center;flex-wrap:wrap}
+  .estrellas button{background:none;border:0;font-size:2.1rem;line-height:1;color:var(--linea);padding:0 .05rem;transition:transform .1s}
+  .estrellas button.on{color:var(--oro)}
+  .estrellas button:active{transform:scale(1.15)}
+  .estrellas .corazon{margin-left:auto;background:var(--blanco);border:1px solid var(--linea);border-radius:999px;padding:.45rem .9rem;font-size:14px;font-weight:700;color:var(--gris)}
+  .estrellas .corazon.on{background:var(--rosa-claro);border-color:var(--rosa);color:var(--rosa-osc)}
+  .guardado{font-size:12px;color:var(--ok);font-weight:600;min-height:1.2em;margin-top:.3rem}
+  .chips{display:flex;flex-wrap:wrap;gap:.4rem}
+  .chips .gt{width:100%;font-size:11px;font-weight:700;color:var(--gris);margin-top:.3rem}
+  .chip{border:1px solid var(--linea);background:var(--blanco);border-radius:999px;padding:.4rem .8rem;font-size:13px;font-weight:600;color:var(--tinta2)}
+  .chip.on{background:var(--azul-osc);border-color:var(--azul-osc);color:#fff}
+  .chip small{opacity:.7;margin-left:.25rem}
+  .promedios{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem}
+  .promedios div{background:var(--papel);border-radius:10px;padding:.55rem .6rem;text-align:center}
+  .promedios .k{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--gris)}
+  .promedios .v{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:600;line-height:1.1}
+  .votos-l{font-size:13px;color:var(--tinta2);margin-top:.6rem}
+  .nota{background:var(--papel);border-radius:10px;padding:.6rem 2rem .6rem .8rem;margin-bottom:.5rem;font-size:14px;position:relative}
+  .nota .q{font-size:11px;color:var(--gris);font-weight:700;margin-bottom:.15rem}
+  .nota .del{position:absolute;top:.4rem;right:.5rem;background:none;border:0;color:var(--gris);font-size:14px}
+  .det{font-size:14px}
+  .det .g{display:grid;grid-template-columns:1fr 1fr;gap:.5rem .9rem;margin-bottom:.9rem}
+  .det .k{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--gris)}
+  .det .v{font-weight:600}
+  .det .bl{margin-bottom:.8rem}
+  .det .bl .v{font-weight:500}
+  .marca-e{display:inline-block;background:var(--rosa-claro);color:#8b4a52;border-radius:999px;font-size:11px;font-weight:700;padding:.15rem .55rem;margin-left:.3rem}
+  .contacto{background:var(--papel);border-radius:10px;padding:.8rem .9rem}
+  details summary{cursor:pointer;font-size:13px;font-weight:700;color:var(--tinta2);list-style:none}
+  details summary::-webkit-details-marker{display:none}
+  details summary::before{content:"+ "} details[open] summary::before{content:"– "}
+  .acciones{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1rem;align-items:center}
+  .numero-grande{font-family:'Cormorant Garamond',serif;font-size:5.5rem;font-weight:600;line-height:1;margin:.4rem 0}
   .etq{font-size:12px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--tinta2)}
+  .centro{text-align:center}
 
   /* Usuarios */
   .lista-u{background:var(--blanco);border:1px solid var(--linea);border-radius:14px;overflow:hidden;margin-bottom:1.6rem}
@@ -86,29 +178,45 @@
   .fila-u.inactivo{opacity:.45}
   .switch{border:1px solid var(--linea);background:none;border-radius:999px;font-size:12px;font-weight:600;padding:.3rem .7rem;color:var(--tinta2)}
   .dos{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}
-  .proximo{background:var(--blanco);border:1px dashed var(--arena);border-radius:14px;padding:2.2rem 1.4rem;text-align:center;color:var(--tinta2)}
 
-  /* Menú */
-  .menu{position:absolute;right:1rem;top:3.4rem;background:var(--blanco);border:1px solid var(--linea);border-radius:12px;box-shadow:0 10px 24px rgba(42,38,34,.12);display:none;min-width:200px;overflow:hidden}
-  .menu.on{display:block}
-  .menu button{display:block;width:100%;text-align:left;background:none;border:0;padding:.8rem 1rem;font-size:14px;font-weight:600}
-  .menu button:hover{background:var(--papel)}
-  .menu .quien{padding:.8rem 1rem;font-size:12px;color:var(--gris);border-bottom:1px solid var(--linea)}
+  /* Chat */
+  .chat-btn{position:fixed;right:1.1rem;bottom:1.1rem;width:58px;height:58px;border-radius:50%;background:var(--tinta);color:#fff;border:0;box-shadow:0 8px 20px rgba(42,38,34,.25);z-index:40;display:flex;align-items:center;justify-content:center}
+  .chat-btn .bdg{position:absolute;top:-2px;right:-2px;background:var(--rosa-osc);color:#fff;font-size:11px;font-weight:700;border-radius:999px;min-width:20px;height:20px;display:none;align-items:center;justify-content:center;padding:0 5px}
+  .chat{position:fixed;right:1.1rem;bottom:5.2rem;width:360px;max-width:calc(100vw - 2.2rem);height:480px;max-height:calc(100vh - 7rem);background:var(--blanco);border:1px solid var(--linea);border-radius:18px;box-shadow:0 14px 34px rgba(42,38,34,.2);z-index:40;display:none;flex-direction:column;overflow:hidden}
+  .chat.on{display:flex}
+  .chat .ch{padding:.8rem 1rem;border-bottom:1px solid var(--linea);font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:600;display:flex;align-items:center}
+  .chat .ch button{margin-left:auto;background:none;border:0;font-size:16px;color:var(--gris)}
+  .chat .msgs{flex:1;overflow-y:auto;padding:.8rem;display:flex;flex-direction:column;gap:.5rem}
+  .burb{max-width:82%;background:var(--papel);border-radius:4px 14px 14px 14px;padding:.5rem .75rem;font-size:14px;align-self:flex-start}
+  .burb.mio{align-self:flex-end;background:var(--azul-claro);border-radius:14px 4px 14px 14px}
+  .burb .q{font-size:11px;font-weight:700;color:var(--tinta2)}
+  .burb .h{font-size:10px;color:var(--gris);text-align:right}
+  .chat form{display:flex;gap:.5rem;padding:.7rem;border-top:1px solid var(--linea)}
+  .chat form input{min-height:42px;border-radius:999px}
+  .toast{position:fixed;left:50%;top:1rem;transform:translateX(-50%) translateY(-160%);background:var(--tinta);color:#fff;border-radius:14px;padding:.75rem 1.1rem;font-size:14px;max-width:min(92vw,420px);z-index:60;transition:transform .3s;box-shadow:0 10px 24px rgba(0,0,0,.2);cursor:pointer}
+  .toast.on{transform:translateX(-50%) translateY(0)}
+  .toast b{display:block;font-size:12px;opacity:.75}
 
   @media (max-width:600px){
-    .grid{grid-template-columns:repeat(2,1fr)}
+    .grid,.grupos{grid-template-columns:repeat(2,1fr)}
     .dos{grid-template-columns:1fr}
     h2{font-size:1.7rem}
-    .marca{font-size:1.25rem}
-    .numero-grande{font-size:4.6rem}
+    .marca{font-size:1.15rem}
+    .cab .foto-m{width:92px;height:122px}
+    .cab h3{font-size:1.45rem}
+    .promedios{grid-template-columns:repeat(2,1fr)}
+    .estrellas button{font-size:1.9rem}
+    .modal{padding:1.2rem}
+    .det .g{grid-template-columns:1fr}
   }
   @page{size:Letter;margin:13mm}
   @media print{
     *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
-    .no-print,.barra,nav.tabs,.buscador,.velo{display:none!important}
+    .no-print,.barra,.chat,.chat-btn,.velo,.toast{display:none!important}
     a[href]:after{content:none}
-    section,main,.vista,.lista-u{break-inside:auto}
-    .ficha,.fila-u{break-inside:avoid}
+    section,main,.vista,.tabla-w{break-inside:auto}
+    .ficha,tr,.grupo{break-inside:avoid}
+    thead{display:table-header-group}
     h1,h2,h3,h4{break-after:avoid}
     p,li{orphans:3;widows:3}
   }
@@ -145,6 +253,7 @@
     <nav class="tabs" id="tabs">
       <button data-ir="lobby" class="on">Lobby</button>
       <button data-ir="pasando">Pasando</button>
+      <button data-ir="corte">Corte</button>
       <button data-ir="callback">Callback</button>
       <button data-ir="callback2">Callback 2</button>
     </nav>
@@ -161,14 +270,61 @@
       </div>
       <div class="grid" id="resultados"></div>
       <div class="vacio" id="r-vacio">Escribe al menos 2 letras para buscar.</div>
-      <div class="seccion-t">Últimas llegadas</div>
+      <div class="seccion-t">Últimas llegadas · <span id="n-llegadas">0</span> en total</div>
       <div class="grid" id="llegadas"></div>
     </section>
 
-    <!-- Próximas pantallas -->
-    <section class="vista" id="v-pasando"><h2>Pasando</h2><div class="proximo">Aquí se calificará canto: estrellas, super like y notas. En construcción.</div></section>
-    <section class="vista" id="v-callback"><h2>Callback</h2><div class="proximo">Aquí estarán los grupos de baile de 10 en 10 y el perfilamiento por personaje. En construcción.</div></section>
-    <section class="vista" id="v-callback2"><h2>Callback 2</h2><div class="proximo">Aquí estarán las fichas con promedios, votos por personaje y la descarga en PDF. En construcción.</div></section>
+    <!-- Pasando -->
+    <section class="vista" id="v-pasando">
+      <h2>Pasando</h2>
+      <p class="ayuda">Toca a quien está cantando para calificarle. Al terminar, cualquier juez da "Siguiente" y el turno avanza para todos.</p>
+      <div class="control" data-etapa="canto"></div>
+      <div class="buscador">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2a2622" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input id="q-pasando" type="search" placeholder="Buscar por nombre o número…" autocomplete="off">
+      </div>
+      <div class="grid" id="g-pasando"></div>
+      <div class="vacio" id="vac-pasando"></div>
+    </section>
+
+    <!-- Corte -->
+    <section class="vista" id="v-corte">
+      <h2>Corte</h2>
+      <p class="ayuda">Ordenados por promedio de estrellas. Con el switch decides quién pasa; puedes marcar a los primeros de golpe y luego hacer excepciones a mano.</p>
+      <div class="barra-corte">
+        <div class="seg" id="seg-corte"><button data-c="1" class="on">Canto → Callback</button><button data-c="2">Baile → Callback 2</button></div>
+      </div>
+      <div class="barra-corte">
+        <input id="top-n" type="number" min="1" inputmode="numeric" placeholder="Ej. 300" style="width:120px;min-height:40px">
+        <button class="btn peq" id="b-top">Marcar a los primeros</button>
+        <button class="btn sec peq" id="b-excel" style="margin-left:auto">Descargar Excel</button>
+      </div>
+      <div class="resumen-corte" id="res-corte"></div>
+      <div class="tabla-w"><table><thead><tr><th>#</th><th>Turno</th><th>Nombre</th><th>Tesitura</th><th>Prom.</th><th>Personajes</th><th>♥</th><th>Pasa</th></tr></thead><tbody id="t-corte"></tbody></table></div>
+    </section>
+
+    <!-- Callback -->
+    <section class="vista" id="v-callback">
+      <h2>Callback · Baile</h2>
+      <p class="ayuda">Grupos de 10 por número de turno. Elige un grupo, llámalo para que su número salga en la pantalla de turnos y califica a cada quien; aquí también se perfila por personaje.</p>
+      <div class="grupos" id="g-grupos"></div>
+      <div class="vacio" id="vac-grupos"></div>
+      <div id="grupo-sel" style="display:none">
+        <div class="seccion-t" id="grupo-t"></div>
+        <div class="acciones" style="margin:-.2rem 0 1rem"><button class="btn peq" id="b-llamar">Llamar a este grupo</button></div>
+        <div class="grid" id="g-grupo"></div>
+      </div>
+    </section>
+
+    <!-- Callback 2 -->
+    <section class="vista" id="v-callback2">
+      <h2>Callback 2</h2>
+      <p class="ayuda">Fichas con los promedios de canto y baile, los votos por personaje y los super likes. Se sigue calificando aquí y puedes descargar las fichas en PDF, una por hoja.</p>
+      <div class="control" data-etapa="callback2"></div>
+      <div class="barra-corte"><button class="btn sec peq" id="b-pdf">Descargar fichas en PDF</button></div>
+      <div class="grid" id="g-callback2"></div>
+      <div class="vacio" id="vac-callback2"></div>
+    </section>
 
     <!-- Usuarios -->
     <section class="vista" id="v-usuarios">
@@ -199,12 +355,22 @@
       </form>
     </section>
   </main>
+
+  <!-- Chat -->
+  <button class="chat-btn no-print" id="chat-btn" aria-label="Chat">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg>
+    <span class="bdg" id="chat-bdg">0</span>
+  </button>
+  <div class="chat no-print" id="chat">
+    <div class="ch">Chat del staff <button id="chat-x" aria-label="Cerrar">✕</button></div>
+    <div class="msgs" id="chat-msgs"></div>
+    <form id="f-chat"><input id="chat-in" placeholder="Escribe un mensaje…" autocomplete="off" maxlength="500"><button class="btn peq">Enviar</button></form>
+  </div>
+  <div class="toast" id="toast"></div>
 </div>
 
-<!-- Confirmar llegada -->
-<div class="velo" id="velo">
-  <div class="modal" id="modal"></div>
-</div>
+<div class="velo" id="velo"><div class="modal" id="modal"></div></div>
+<div class="velo" id="velo2" style="z-index:70;align-items:center"><div class="modal centro" id="modal2" style="max-width:400px"></div></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -212,9 +378,42 @@ const SB = supabase.createClient('https://lbvgwsyxuhgjpstnuqxf.supabase.co','sb_
 const DOM = '@usuarios.springawakeningmexico.com';
 const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
 const esc = t => String(t ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-let yo = null, cacheFotos = {};
+const sinAcento = t => String(t||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase();
+const hora = d => new Date(d).toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'});
+const fmt = n => (n===null||n===undefined) ? '—' : Number(n).toFixed(1);
 
-/* ---------- Sesión ---------- */
+let yo = null, vista = 'lobby', turnoActual = 0;
+let STAFF = {}, ETAPAS = {canto:'Canto', baile:'Baile', callback2:'Callback 2'}, PERSONAJES = [];
+let RES = [], MIS = {}, FOTOS = {};
+let fichaAbierta = null, grupoSel = null, modoCorte = 1;
+
+/* ================= Utilidades ================= */
+async function todo(build){ // trae todas las filas, de 1000 en 1000
+  let out = [], i = 0;
+  while(true){ const {data, error} = await build().range(i, i+999); if(error || !data) break; out = out.concat(data); if(data.length < 1000) break; i += 1000; }
+  return out;
+}
+async function firmar(paths){
+  const faltan = [...new Set(paths.filter(p=>p && !FOTOS[p]))];
+  for(let i=0;i<faltan.length;i+=100){
+    const {data} = await SB.storage.from('fotos').createSignedUrls(faltan.slice(i,i+100), 7200);
+    (data||[]).forEach(d=>{ if(d.signedUrl) FOTOS[d.path] = d.signedUrl; });
+  }
+}
+const imgDe = a => a.foto_path && FOTOS[a.foto_path] ? `<img src="${FOTOS[a.foto_path]}" alt="" loading="lazy">` : esc((a.nombre_completo||'?')[0]);
+function edadDe(f){ if(!f) return ''; const h=new Date(), n=new Date(f+'T12:00:00'); let e=h.getFullYear()-n.getFullYear(); const m=h.getMonth()-n.getMonth(); if(m<0||(m===0&&h.getDate()<n.getDate())) e--; return e; }
+function toast(titulo, texto, alClic){ const t=$('#toast'); t.innerHTML=`<b>${esc(titulo)}</b>${esc(texto)}`; t.classList.add('on'); t.onclick=()=>{ t.classList.remove('on'); alClic&&alClic(); }; clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove('on'),5000); }
+function preguntar(html, si='Sí', no='Cancelar'){
+  return new Promise(ok=>{
+    $('#modal2').innerHTML = `<p style="font-size:15px;margin-bottom:1.2rem">${html}</p><div class="acciones" style="justify-content:center"><button class="btn sec" id="q-no">${esc(no)}</button><button class="btn" id="q-si">${esc(si)}</button></div>`;
+    $('#velo2').classList.add('on');
+    $('#q-no').onclick=()=>{ $('#velo2').classList.remove('on'); ok(false); };
+    $('#q-si').onclick=()=>{ $('#velo2').classList.remove('on'); ok(true); };
+  });
+}
+let tRefresco; function refrescarLuego(ms=1200){ clearTimeout(tRefresco); tRefresco=setTimeout(async()=>{ await cargarRes(); pintarVista(); },ms); }
+
+/* ================= Sesión ================= */
 async function arrancar(){
   const {data:{session}} = await SB.auth.getSession();
   if(!session){ $('#login').style.display='block'; $('#app').style.display='none'; return; }
@@ -224,7 +423,14 @@ async function arrancar(){
   $('#quien').innerHTML = `${esc(yo.nombre)} · <b>${esc(yo.usuario)}</b>`;
   $$('.solo-admin').forEach(b => b.style.display = yo.rol==='admin' ? 'block' : 'none');
   $('#login').style.display='none'; $('#app').style.display='block';
-  escucharTurno(); cargarLlegadas();
+  const [st, et, pe] = await Promise.all([
+    SB.from('staff').select('id,nombre'), SB.from('etapas').select('clave,nombre'), SB.from('personajes').select('nombre,grupo,orden').order('orden')]);
+  (st.data||[]).forEach(s=>STAFF[s.id]=s.nombre);
+  (et.data||[]).forEach(e=>ETAPAS[e.clave]=e.nombre);
+  PERSONAJES = pe.data||[];
+  escucharTurno(); escucharCambios(); iniciarChat();
+  await cargarRes();
+  pintarVista();
 }
 $('#f-login').addEventListener('submit', async e=>{
   e.preventDefault(); $('#m-login').textContent='';
@@ -238,44 +444,85 @@ $('#f-login').addEventListener('submit', async e=>{
 });
 $('#b-salir').addEventListener('click', async ()=>{ await SB.auth.signOut(); location.reload(); });
 
-/* ---------- Navegación ---------- */
+/* ================= Datos ================= */
+async function cargarRes(){
+  RES = await todo(()=>SB.from('v_resumen').select('id,turno,nombre_completo,tesitura,track,foto_path,edad,marca_edad,pasa_callback,pasa_callback2,prom_canto,prom_baile,prom_callback2,super_likes,votos_personaje,grupo_baile').not('turno','is',null).order('turno'));
+  const mias = await todo(()=>SB.from('calificaciones').select('aspirante_id,etapa,estrellas,super_like').eq('juez_id', yo.id));
+  MIS = {}; mias.forEach(c=>MIS[c.aspirante_id+'|'+c.etapa]=c);
+  $('#n-llegadas').textContent = RES.length;
+}
+function escucharCambios(){
+  SB.channel('cambios')
+    .on('postgres_changes',{event:'*',schema:'public',table:'calificaciones'}, ()=>{ refrescarLuego(); if(fichaAbierta) recargarResumenFicha(); })
+    .on('postgres_changes',{event:'*',schema:'public',table:'votos_personaje'}, ()=>{ refrescarLuego(); if(fichaAbierta) recargarResumenFicha(); })
+    .on('postgres_changes',{event:'*',schema:'public',table:'notas'}, ()=>{ if(fichaAbierta) cargarNotas(); })
+    .on('postgres_changes',{event:'*',schema:'public',table:'aspirantes'}, ()=>refrescarLuego())
+    .subscribe();
+}
+
+/* ================= Navegación ================= */
 function ir(v){
+  vista = v;
   $$('.vista').forEach(x=>x.classList.toggle('on', x.id==='v-'+v));
   $$('#tabs button').forEach(b=>b.classList.toggle('on', b.dataset.ir===v));
   $('#menu').classList.remove('on');
   if(v==='usuarios') cargarUsuarios();
+  pintarVista();
   window.scrollTo({top:0});
+}
+function pintarVista(){
+  pintarControles();
+  if(vista==='lobby') cargarLlegadas();
+  if(vista==='pasando') pintarPasando();
+  if(vista==='corte') pintarCorte();
+  if(vista==='callback') pintarGrupos();
+  if(vista==='callback2') pintarCallback2();
 }
 $$('[data-ir]').forEach(b=>b.addEventListener('click', ()=>ir(b.dataset.ir)));
 $('#b-menu').addEventListener('click', e=>{ e.stopPropagation(); $('#menu').classList.toggle('on'); });
 document.addEventListener('click', e=>{ if(!e.target.closest('#menu')) $('#menu').classList.remove('on'); });
 
-/* ---------- Turno actual (tiempo real) ---------- */
+/* ================= Turno ================= */
 async function escucharTurno(){
-  const pon = v => $('#chip-turno').textContent = 'Turno ' + (v?.turno || '—');
+  const pon = v => { turnoActual = v?.turno || 0; $('#chip-turno').textContent = 'Turno ' + (turnoActual || '—'); pintarControles(); if(vista==='pasando') pintarPasando(); if(vista==='callback2') pintarCallback2(); };
   const {data} = await SB.from('config').select('valor').eq('clave','turno_actual').single();
   pon(data?.valor);
   SB.channel('turno').on('postgres_changes',{event:'UPDATE',schema:'public',table:'config',filter:'clave=eq.turno_actual'}, p=>pon(p.new.valor)).subscribe();
 }
-
-/* ---------- Fotos ---------- */
-async function firmar(paths){
-  const faltan = [...new Set(paths.filter(p=>p && !cacheFotos[p]))];
-  if(faltan.length){
-    const {data} = await SB.storage.from('fotos').createSignedUrls(faltan, 3600);
-    (data||[]).forEach(d=>{ if(d.signedUrl) cacheFotos[d.path] = d.signedUrl; });
-  }
+const elegibles = etapa => RES.filter(a => etapa==='canto' || (etapa==='baile' && a.pasa_callback) || (etapa==='callback2' && a.pasa_callback2));
+function pintarControles(){
+  $$('.control').forEach(c=>{
+    const et = c.dataset.etapa;
+    c.innerHTML = `<div class="esp"><div class="lbl">Turno actual</div><div class="n">${turnoActual||'—'}</div></div>
+      <input class="ir" type="number" inputmode="numeric" placeholder="Ir a #" data-ir-turno>
+      <button class="btn sec peq" data-ant>◀ Anterior</button>
+      <button class="btn peq" data-sig>Siguiente ▶</button>`;
+    c.querySelector('[data-sig]').onclick = async (ev)=>{ ev.target.disabled=true; const {error}=await SB.rpc('siguiente_turno',{p_etapa:et}); ev.target.disabled=false; if(error) toast('Turno','No se pudo avanzar; revisa tu conexión.'); };
+    c.querySelector('[data-ant]').onclick = async ()=>{ const prev = elegibles(et).filter(a=>a.turno<turnoActual).map(a=>a.turno).pop(); if(prev) await SB.rpc('establecer_turno',{p_turno:prev}); };
+    c.querySelector('[data-ir-turno]').onkeydown = async (ev)=>{ if(ev.key==='Enter'){ const n=parseInt(ev.target.value,10); if(n>0){ await SB.rpc('establecer_turno',{p_turno:n}); ev.target.value=''; } } };
+  });
 }
-function tarjeta(a){
-  const img = a.foto_path && cacheFotos[a.foto_path] ? `<img src="${cacheFotos[a.foto_path]}" alt="" loading="lazy">` : esc((a.nombre_completo||'?')[0]);
-  return `<button class="ficha" data-id="${a.id}">
-    ${a.turno ? `<span class="num">${a.turno}</span>` : ''}
-    <div class="foto">${img}</div>
-    <div class="info"><div class="nom">${esc(a.nombre_completo)}</div><div class="tes">${esc(a.tesitura||'')}</div></div>
+
+/* ================= Tarjetas ================= */
+function tarjeta(a, etapa, extra=''){
+  const m = etapa && MIS[a.id+'|'+etapa];
+  const mis = etapa ? `<div class="mis">${m&&m.estrellas ? '★'.repeat(m.estrellas) : '<span style="color:var(--gris);font-weight:500">Sin calificar</span>'} ${m&&m.super_like?'<span class="c">♥</span>':''}</div>` : '';
+  const ahora = etapa && a.turno===turnoActual;
+  return `<button class="ficha ${ahora?'actual':''}" data-id="${a.id}" data-etapa="${etapa||''}">
+    ${a.turno ? `<span class="num">${a.turno}</span>` : ''}${ahora ? '<span class="ahora">Ahora</span>' : ''}
+    <div class="foto">${imgDe(a)}</div>
+    <div class="info"><div class="nom">${esc(a.nombre_completo)}</div><div class="tes">${esc(a.tesitura||'')}${a.track?' · '+esc(a.track):''}</div>${extra}${mis}</div>
   </button>`;
 }
+function enlazar(cont, fuente){
+  $$(cont+' .ficha').forEach(b=>b.addEventListener('click', ()=>{
+    const a = fuente.find(x=>x.id===b.dataset.id) || RES.find(x=>x.id===b.dataset.id);
+    if(!a) return;
+    if(b.dataset.etapa) abrirFicha(a.id, b.dataset.etapa); else lobbyConfirmar(a);
+  }));
+}
 
-/* ---------- Lobby ---------- */
+/* ================= Lobby ================= */
 let ultimos = [], tBusca;
 $('#q').addEventListener('input', ()=>{ clearTimeout(tBusca); tBusca = setTimeout(buscar, 250); });
 async function buscar(){
@@ -285,63 +532,371 @@ async function buscar(){
   if(error){ $('#r-vacio').textContent='No se pudo buscar; revisa tu conexión.'; return; }
   ultimos = data || [];
   await firmar(ultimos.map(a=>a.foto_path));
-  $('#resultados').innerHTML = ultimos.map(tarjeta).join('');
+  $('#resultados').innerHTML = ultimos.map(a=>tarjeta(a)).join('');
   $('#r-vacio').style.display = ultimos.length ? 'none' : 'block';
   $('#r-vacio').textContent = 'No hay nadie registrado con ese nombre.';
-  enlazar('#resultados');
+  enlazar('#resultados', ultimos);
 }
 async function cargarLlegadas(){
-  const {data} = await SB.from('aspirantes').select('id,nombre_completo,turno,foto_path,tesitura,llegada_at').not('turno','is',null).order('turno',{ascending:false}).limit(9);
-  await firmar((data||[]).map(a=>a.foto_path));
-  $('#llegadas').innerHTML = (data||[]).map(tarjeta).join('') || '<div class="vacio" style="grid-column:1/-1">Todavía no llega nadie.</div>';
-  window._llegadas = data || [];
-  enlazar('#llegadas');
+  const l = [...RES].sort((a,b)=>b.turno-a.turno).slice(0,9);
+  await firmar(l.map(a=>a.foto_path));
+  $('#llegadas').innerHTML = l.map(a=>tarjeta(a)).join('') || '<div class="vacio" style="grid-column:1/-1">Todavía no llega nadie.</div>';
+  enlazar('#llegadas', l);
 }
-function enlazar(cont){
-  $$(cont+' .ficha').forEach(b=>b.addEventListener('click', ()=>{
-    const a = [...ultimos, ...(window._llegadas||[])].find(x=>x.id===b.dataset.id); if(a) confirmar(a);
-  }));
-}
-function cerrar(){ $('#velo').classList.remove('on'); }
+function cerrar(){ $('#velo').classList.remove('on'); fichaAbierta=null; }
 $('#velo').addEventListener('click', e=>{ if(e.target.id==='velo') cerrar(); });
 
-function confirmar(a){
-  const foto = a.foto_path && cacheFotos[a.foto_path] ? `<img src="${cacheFotos[a.foto_path]}" alt="">` : '';
-  if(a.turno){
-    $('#modal').innerHTML = `<div class="foto-m">${foto}</div><h3>${esc(a.nombre_completo)}</h3>
-      <div class="etq" style="margin-top:1rem">Ya tiene número</div><div class="numero-grande">${a.turno}</div>
-      <div class="acciones"><button class="btn" id="m-ok">Listo</button></div>`;
+function detalle(d){
+  if(!d) return '';
+  const lista = arr => (arr&&arr.length) ? arr.map(esc).join(', ') : '—';
+  const pares = (arr,a,b) => (arr&&arr.length) ? arr.map(x=>`${esc(x[a]||'')}${x[b]?' · <span style="color:var(--gris)">'+esc(x[b])+'</span>':''}`).join('<br>') : '—';
+  const e = edadDe(d.fecha_nacimiento);
+  return `<div class="det">
+    <div class="g">
+      <div><div class="k">Tesitura</div><div class="v">${esc(d.tesitura||'—')}</div></div>
+      <div><div class="k">Track</div><div class="v">${esc(d.track||'—')}</div></div>
+      <div><div class="k">Altura</div><div class="v">${d.altura_cm? d.altura_cm+' cm':'—'}</div></div>
+      <div><div class="k">Edad</div><div class="v">${e} años${e>30?'<span class="marca-e">+30</span>':''}</div></div>
+    </div>
+    <div class="bl"><div class="k">Baile</div><div class="v">${lista(d.baile)}</div></div>
+    <div class="bl"><div class="k">Otras habilidades</div><div class="v">${lista(d.habilidades)}</div></div>
+    <div class="bl"><div class="k">Proyectos</div><div class="v">${pares(d.proyectos,'nombre','lugar')}</div></div>
+    <div class="bl"><div class="k">Formación</div><div class="v">${pares(d.formacion,'grado','escuela')}</div></div>
+    <div class="contacto"><div class="g" style="margin:0">
+      <div><div class="k">Teléfono</div><div class="v">${esc(d.telefono||'—')}</div></div>
+      <div><div class="k">Correo</div><div class="v" style="word-break:break-all">${esc(d.correo||'—')}</div></div>
+      <div><div class="k">Residencia</div><div class="v">${esc(d.residencia||'—')}</div></div>
+      <div><div class="k">Redes</div><div class="v">${[d.instagram&&'IG '+esc(d.instagram), d.tiktok&&'TikTok '+esc(d.tiktok)].filter(Boolean).join('<br>')||'—'}</div></div>
+      <div><div class="k">Playera</div><div class="v">${esc(d.talla_playera||'—')}</div></div>
+      <div><div class="k">Zapato</div><div class="v">${esc(d.talla_zapato||'—')}</div></div>
+    </div></div>
+  </div>`;
+}
+async function abrirCV(path){
+  const w = window.open('', '_blank');
+  const {data} = await SB.storage.from('cvs').createSignedUrl(path, 600);
+  if(data?.signedUrl){ if(w) w.location = data.signedUrl; else location.href = data.signedUrl; } else if(w) w.close();
+}
+async function lobbyConfirmar(a){
+  await firmar([a.foto_path]);
+  $('#modal').innerHTML = '<div class="vacio">Cargando…</div>'; $('#velo').classList.add('on');
+  const {data:d} = await SB.from('aspirantes').select('*').eq('id', a.id).maybeSingle();
+  const cab = `<button class="cerrar-x" data-x aria-label="Cerrar">✕</button><div class="cab"><div class="foto-m">${imgDe(a)}</div><div><h3>${esc(a.nombre_completo)}</h3><div class="sub">${esc(d?.tesitura||'')}</div></div></div>`;
+  const pinta = (html) => {
+    $('#modal').innerHTML = cab + html + `<div class="bloque-m">${detalle(d)}${d?.cv_path?'<div class="acciones"><button class="btn sec peq" data-cv>Ver CV</button></div>':''}</div>`;
+    $$('#modal [data-x]').forEach(b=>b.onclick=cerrar);
+    const cv = $('#modal [data-cv]'); if(cv) cv.onclick=()=>abrirCV(d.cv_path);
+  };
+  if(d?.turno){
+    pinta(`<div class="centro" style="margin-top:1rem"><div class="etq">Número</div><div class="numero-grande">${d.turno}</div></div>`);
   } else {
-    $('#modal').innerHTML = `<div class="foto-m">${foto}</div><h3>${esc(a.nombre_completo)}</h3>
-      <p class="ayuda" style="margin:.6rem 0 0">¿Es esta persona? Al confirmar se le asigna el siguiente número de turno.</p>
-      <div class="acciones"><button class="btn sec" id="m-no">No es</button><button class="btn" id="m-si">Sí, asignar turno</button></div>`;
-    $('#m-no').onclick = cerrar;
+    pinta(`<div class="centro" style="margin-top:1rem"><p class="ayuda">¿Es esta persona? Al confirmar se le asigna el siguiente número de turno.</p>
+      <div class="acciones" style="justify-content:center"><button class="btn sec" data-x>No es</button><button class="btn" id="m-si">Sí, asignar turno</button></div></div>`);
     $('#m-si').onclick = async ()=>{
       $('#m-si').disabled = true;
       const {data, error} = await SB.rpc('asignar_turno', {p_aspirante: a.id});
       if(error){ $('#m-si').disabled=false; $('#m-si').textContent='Intentar de nuevo'; return; }
-      a.turno = data;
-      $('#modal').innerHTML = `<div class="foto-m">${foto}</div><h3>${esc(a.nombre_completo)}</h3>
-        <div class="etq" style="margin-top:1rem">Número</div><div class="numero-grande">${data}</div>
-        <div class="acciones"><button class="btn" id="m-ok">Listo</button></div>`;
-      $('#m-ok').onclick = ()=>{ cerrar(); $('#q').value=''; buscar(); cargarLlegadas(); $('#q').focus(); };
+      d.turno = data;
+      pinta(`<div class="centro" style="margin-top:1rem"><div class="etq">Número</div><div class="numero-grande">${data}</div>
+        <div class="acciones" style="justify-content:center"><button class="btn" id="m-ok">Listo</button></div></div>`);
+      $('#velo').scrollTop = 0;
+      $('#m-ok').onclick = ()=>{ cerrar(); $('#q').value=''; buscar(); $('#q').focus(); };
+      await cargarRes(); cargarLlegadas();
     };
   }
-  const ok = $('#m-ok'); if(ok) ok.onclick = cerrar;
-  $('#velo').classList.add('on');
 }
 
-/* ---------- Usuarios ---------- */
+/* ================= Pasando ================= */
+$('#q-pasando').addEventListener('input', ()=>pintarPasando());
+async function pintarPasando(){
+  const q = sinAcento($('#q-pasando').value.trim());
+  let lista;
+  if(q){ lista = RES.filter(a=> String(a.turno)===q || sinAcento(a.nombre_completo).includes(q)).slice(0,60); }
+  else { let i = RES.findIndex(a=>a.turno>=turnoActual); if(i<0) i = Math.max(0, RES.length-6); lista = RES.slice(Math.max(0,i-3), i+30); }
+  await firmar(lista.map(a=>a.foto_path));
+  $('#g-pasando').innerHTML = lista.map(a=>tarjeta(a,'canto')).join('');
+  $('#vac-pasando').textContent = RES.length ? (lista.length?'':'No hay nadie con ese nombre o número.') : 'Todavía no llega nadie al lobby.';
+  enlazar('#g-pasando', lista);
+}
+
+/* ================= Ficha de calificación ================= */
+async function abrirFicha(id, etapa){
+  const a = RES.find(x=>x.id===id); if(!a) return;
+  fichaAbierta = {id, etapa};
+  await firmar([a.foto_path]);
+  $('#modal').innerHTML = '<div class="vacio">Cargando…</div>'; $('#velo').classList.add('on'); $('#velo').scrollTop = 0;
+  const [{data:d}, {data:mv}] = await Promise.all([
+    SB.from('aspirantes').select('*').eq('id', id).maybeSingle(),
+    SB.from('votos_personaje').select('personaje').eq('aspirante_id', id).eq('juez_id', yo.id)]);
+  const m = MIS[id+'|'+etapa] || {};
+  const misVotos = new Set((mv||[]).map(v=>v.personaje));
+  const conPersonajes = etapa !== 'canto';
+  const grupos = [...new Set(PERSONAJES.map(p=>p.grupo))];
+  const enTurno = '<span class="etq" style="color:var(--rosa-osc)">En turno</span>';
+  $('#modal').innerHTML = `<button class="cerrar-x" data-x aria-label="Cerrar">✕</button>
+    <div class="cab"><div class="foto-m">${imgDe(a)}</div><div>
+      <span class="badge">${a.turno}</span><h3>${esc(a.nombre_completo)}</h3>
+      <div class="sub">${esc(a.tesitura||'')}${a.track?' · '+esc(a.track):''} · ${a.edad} años${a.marca_edad?'<span class="marca-e">+30</span>':''}</div>
+      <div class="acciones" style="margin-top:.7rem">
+        ${a.turno!==turnoActual?`<button class="btn sec peq" id="b-ponturno">Poner en turno</button>`:enTurno}
+        ${d?.cv_path?'<button class="btn sec peq" data-cv>Ver CV</button>':''}
+      </div>
+    </div></div>
+    <div class="bloque-m">
+      <div class="t">Tu calificación · ${esc(ETAPAS[etapa]||etapa)}</div>
+      <div class="estrellas" id="estrellas">
+        ${[1,2,3,4,5].map(n=>`<button data-e="${n}" class="${(m.estrellas||0)>=n?'on':''}" aria-label="${n} estrellas">★</button>`).join('')}
+        <button class="corazon ${m.super_like?'on':''}" id="corazon">♥ Super like</button>
+      </div>
+      <div class="guardado" id="guardado"></div>
+      ${conPersonajes?`<div class="t" style="margin-top:.8rem">Perfilar para</div><div class="chips" id="chips">
+        ${grupos.map(g=>`<div class="gt">${esc(g)}</div>`+PERSONAJES.filter(p=>p.grupo===g).map(p=>`<button class="chip ${misVotos.has(p.nombre)?'on':''}" data-p="${esc(p.nombre)}">${esc(p.nombre)}<small></small></button>`).join('')).join('')}
+      </div>`:''}
+    </div>
+    <div class="bloque-m"><div class="t">Resumen de todos los jueces</div><div id="resumen-f"></div></div>
+    <div class="bloque-m"><div class="t">Notas</div><div id="notas"></div>
+      <textarea id="nota-in" placeholder="Escribe una nota que verán todos los jueces…" maxlength="1000"></textarea>
+      <div class="acciones" style="margin-top:.5rem"><button class="btn peq" id="b-nota">Agregar nota</button></div></div>
+    <div class="bloque-m"><details><summary>Ficha completa y contacto</summary><div style="margin-top:.8rem">${detalle(d)}</div></details></div>`;
+  $$('#modal [data-x]').forEach(b=>b.onclick=cerrar);
+  const cv = $('#modal [data-cv]'); if(cv) cv.onclick=()=>abrirCV(d.cv_path);
+  const pt = $('#b-ponturno'); if(pt) pt.onclick = async ()=>{ await SB.rpc('establecer_turno',{p_turno:a.turno}); pt.outerHTML=enTurno; };
+
+  const guardar = async (cambios)=>{
+    const prev = MIS[id+'|'+etapa] || {};
+    const fila = {aspirante_id:id, juez_id:yo.id, etapa, estrellas: prev.estrellas ?? null, super_like: !!prev.super_like, ...cambios, updated_at:new Date().toISOString()};
+    MIS[id+'|'+etapa] = fila;
+    const {error} = await SB.from('calificaciones').upsert(fila, {onConflict:'aspirante_id,juez_id,etapa'});
+    $('#guardado').textContent = error ? 'No se guardó; revisa tu conexión.' : 'Guardado ✓';
+    $('#guardado').style.color = error ? 'var(--error)' : 'var(--ok)';
+  };
+  $$('#estrellas [data-e]').forEach(b=>b.onclick=()=>{
+    const n = +b.dataset.e; $$('#estrellas [data-e]').forEach(x=>x.classList.toggle('on', +x.dataset.e<=n)); guardar({estrellas:n});
+  });
+  $('#corazon').onclick = ()=>{ const on = !$('#corazon').classList.contains('on'); $('#corazon').classList.toggle('on',on); guardar({super_like:on}); };
+  $$('#chips [data-p]').forEach(b=>b.onclick=async ()=>{
+    const on = !b.classList.contains('on'); b.classList.toggle('on',on);
+    const r = on ? await SB.from('votos_personaje').insert({aspirante_id:id, juez_id:yo.id, personaje:b.dataset.p})
+                 : await SB.from('votos_personaje').delete().eq('aspirante_id',id).eq('juez_id',yo.id).eq('personaje',b.dataset.p);
+    $('#guardado').textContent = r.error ? 'No se guardó el voto.' : 'Guardado ✓';
+    $('#guardado').style.color = r.error ? 'var(--error)' : 'var(--ok)';
+  });
+  $('#b-nota').onclick = async ()=>{
+    const t = $('#nota-in').value.trim(); if(!t) return;
+    $('#b-nota').disabled = true;
+    const {error} = await SB.from('notas').insert({aspirante_id:id, autor_id:yo.id, etapa, texto:t});
+    $('#b-nota').disabled = false;
+    if(!error){ $('#nota-in').value=''; cargarNotas(); } else toast('Notas','No se guardó la nota.');
+  };
+  recargarResumenFicha(); cargarNotas();
+}
+async function recargarResumenFicha(){
+  if(!fichaAbierta || !$('#resumen-f')) return;
+  const {data:r} = await SB.from('v_resumen').select('prom_canto,prom_baile,prom_callback2,super_likes,votos_personaje').eq('id', fichaAbierta.id).maybeSingle();
+  if(!r || !$('#resumen-f')) return;
+  const votos = Object.entries(r.votos_personaje||{}).sort((a,b)=>b[1]-a[1]);
+  $('#resumen-f').innerHTML = `<div class="promedios">
+      <div><div class="k">${esc(ETAPAS.canto)}</div><div class="v">${fmt(r.prom_canto)}</div></div>
+      <div><div class="k">${esc(ETAPAS.baile)}</div><div class="v">${fmt(r.prom_baile)}</div></div>
+      <div><div class="k">${esc(ETAPAS.callback2)}</div><div class="v">${fmt(r.prom_callback2)}</div></div>
+      <div><div class="k">Super likes</div><div class="v">${r.super_likes||0}</div></div></div>
+    <div class="votos-l">${votos.length ? 'Votos por personaje: ' + votos.map(([p,n])=>`<b>${esc(p)}</b> ${n}`).join(' · ') : 'Sin votos por personaje todavía.'}</div>`;
+  $$('#chips [data-p]').forEach(b=>{ b.querySelector('small').textContent = (r.votos_personaje||{})[b.dataset.p] || ''; });
+}
+async function cargarNotas(){
+  if(!fichaAbierta || !$('#notas')) return;
+  const {data} = await SB.from('notas').select('id,autor_id,etapa,texto,created_at').eq('aspirante_id', fichaAbierta.id).order('created_at');
+  if(!$('#notas')) return;
+  $('#notas').innerHTML = (data||[]).map(n=>`<div class="nota"><div class="q">${esc(STAFF[n.autor_id]||'Juez')} · ${esc(ETAPAS[n.etapa]||'')} · ${hora(n.created_at)}</div>${esc(n.texto)}
+    ${n.autor_id===yo.id?`<button class="del" data-n="${n.id}" aria-label="Borrar nota">✕</button>`:''}</div>`).join('') || '<p class="ayuda" style="margin-bottom:.6rem">Sin notas todavía.</p>';
+  $$('#notas [data-n]').forEach(b=>b.onclick=async ()=>{ await SB.from('notas').delete().eq('id', b.dataset.n); cargarNotas(); });
+}
+
+/* ================= Corte ================= */
+$$('#seg-corte button').forEach(b=>b.onclick=()=>{ modoCorte=+b.dataset.c; $$('#seg-corte button').forEach(x=>x.classList.toggle('on',x===b)); pintarCorte(); });
+function listaCorte(){
+  const campo = modoCorte===1 ? 'prom_canto' : 'prom_baile';
+  const base = modoCorte===1 ? RES : RES.filter(a=>a.pasa_callback);
+  return [...base].sort((a,b)=>(b[campo]??-1)-(a[campo]??-1) || (b.super_likes||0)-(a.super_likes||0) || a.turno-b.turno);
+}
+function pintarCorte(){
+  const campo = modoCorte===1 ? 'prom_canto' : 'prom_baile', pasa = modoCorte===1 ? 'pasa_callback' : 'pasa_callback2';
+  const l = listaCorte(), n = l.filter(a=>a[pasa]).length;
+  $('#res-corte').innerHTML = `<b>${n}</b> de ${l.length} pasan a ${modoCorte===1?'Callback':'Callback 2'}.`;
+  const topN = parseInt($('#top-n').value,10);
+  $('#t-corte').innerHTML = l.map((a,i)=>{
+    const votos = Object.entries(a.votos_personaje||{}).sort((x,y)=>y[1]-x[1]).slice(0,2).map(([p,v])=>`${esc(p)} ${v}`).join(', ');
+    return (topN && i===topN ? `<tr class="linea-corte"><td colspan="8">Corte en ${topN}</td></tr>` : '') +
+    `<tr class="${a[pasa]?'pasa':''}"><td>${i+1}</td><td>${a.turno}</td><td><button class="lnk" data-f="${a.id}">${esc(a.nombre_completo)}</button>${a.marca_edad?'<span class="marca-e">+30</span>':''}</td>
+      <td>${esc(a.tesitura||'')}</td><td><b>${fmt(a[campo])}</b></td><td style="font-size:12px;color:var(--tinta2)">${votos||'—'}</td><td>${a.super_likes||''}</td>
+      <td><button class="tg ${a[pasa]?'on':''}" data-t="${a.id}" aria-label="Pasa"></button></td></tr>`;
+  }).join('') || '<tr><td colspan="8" class="vacio">Todavía no hay aspirantes con turno.</td></tr>';
+  $$('#t-corte [data-t]').forEach(b=>b.onclick=async ()=>{
+    const a = RES.find(x=>x.id===b.dataset.t), v = !a[pasa];
+    a[pasa] = v; if(pasa==='pasa_callback' && !v) a.pasa_callback2 = false; pintarCorte();
+    const cambios = {[pasa]: v}; if(pasa==='pasa_callback' && !v) cambios.pasa_callback2 = false;
+    const {error} = await SB.from('aspirantes').update(cambios).eq('id', a.id);
+    if(error){ toast('Corte','No se guardó el cambio.'); await cargarRes(); pintarCorte(); }
+  });
+  $$('#t-corte [data-f]').forEach(b=>b.onclick=()=>abrirFicha(b.dataset.f, modoCorte===1?'canto':'baile'));
+}
+$('#top-n').addEventListener('input', pintarCorte);
+$('#b-top').onclick = async ()=>{
+  const n = parseInt($('#top-n').value,10); if(!n) return $('#top-n').focus();
+  const pasa = modoCorte===1 ? 'pasa_callback' : 'pasa_callback2', l = listaCorte();
+  if(!await preguntar(`Se marcará que pasan los primeros <b>${n}</b> y los demás quedarán como "no pasa". Las excepciones las puedes hacer después con el switch.`, 'Marcar')) return;
+  const si = l.slice(0,n).map(a=>a.id), no = l.slice(n).map(a=>a.id);
+  for(let i=0;i<si.length;i+=200) await SB.from('aspirantes').update({[pasa]:true}).in('id', si.slice(i,i+200));
+  const cambiosNo = {[pasa]:false}; if(pasa==='pasa_callback') cambiosNo.pasa_callback2 = false;
+  for(let i=0;i<no.length;i+=200) await SB.from('aspirantes').update(cambiosNo).in('id', no.slice(i,i+200));
+  await cargarRes(); pintarCorte();
+};
+
+/* Excel */
+function cargarXLSX(){ return window.XLSX ? Promise.resolve() : new Promise((ok,no)=>{ const s=document.createElement('script'); s.src='https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js'; s.onload=ok; s.onerror=no; document.head.appendChild(s); }); }
+$('#b-excel').onclick = async ()=>{
+  const b = $('#b-excel'); b.disabled = true; b.textContent = 'Preparando…';
+  try{
+    await cargarXLSX();
+    const [todos, notas] = await Promise.all([
+      todo(()=>SB.from('v_resumen').select('*').order('turno',{nullsFirst:false})),
+      todo(()=>SB.from('notas').select('aspirante_id,autor_id,etapa,texto,created_at').order('created_at'))]);
+    const porAsp = {}; notas.forEach(n=>{ (porAsp[n.aspirante_id] ||= []).push(`${STAFF[n.autor_id]||'Juez'} (${ETAPAS[n.etapa]||''}): ${n.texto}`); });
+    const L = arr => (arr||[]).join(', ');
+    const filas = todos.map(a=>({
+      'Turno':a.turno??'', 'Nombre':a.nombre_completo, 'Tesitura':a.tesitura, 'Track':a.track, 'Altura (cm)':a.altura_cm, 'Edad':a.edad, 'Más de 30':a.marca_edad?'Sí':'',
+      'Baile':L(a.baile), 'Otras habilidades':L(a.habilidades),
+      'Proyectos':(a.proyectos||[]).map(p=>[p.nombre,p.lugar].filter(Boolean).join(' · ')).join(' | '),
+      'Formación':(a.formacion||[]).map(p=>[p.grado,p.escuela].filter(Boolean).join(' · ')).join(' | '),
+      ['Prom. '+ETAPAS.canto]:a.prom_canto, ['Prom. '+ETAPAS.baile]:a.prom_baile, ['Prom. '+ETAPAS.callback2]:a.prom_callback2, 'Super likes':a.super_likes,
+      'Votos por personaje':Object.entries(a.votos_personaje||{}).map(([p,n])=>`${p} ${n}`).join(', '),
+      'Pasa a Callback':a.pasa_callback?'Sí':'', 'Pasa a Callback 2':a.pasa_callback2?'Sí':'', 'Grupo de baile':a.grupo_baile??'',
+      'Notas':(porAsp[a.id]||[]).join(' | '),
+      'Fecha de nacimiento':a.fecha_nacimiento, 'Correo':a.correo, 'Teléfono':a.telefono, 'Residencia':a.residencia, 'Instagram':a.instagram, 'TikTok':a.tiktok,
+      'Talla playera':a.talla_playera, 'Talla zapato':a.talla_zapato,
+      'Registro':a.created_at?new Date(a.created_at).toLocaleString('es-MX'):'', 'Llegada':a.llegada_at?new Date(a.llegada_at).toLocaleString('es-MX'):''
+    }));
+    if(!filas.length){ toast('Excel','Todavía no hay registros.'); }
+    else {
+      const ws = XLSX.utils.json_to_sheet(filas); ws['!cols'] = Object.keys(filas[0]).map(k=>({wch: k==='Notas'?60 : k==='Nombre'?28 : 16}));
+      const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, 'Aspirantes');
+      XLSX.writeFile(wb, `Spring_Awakening_audiciones_${new Date().toISOString().slice(0,10)}.xlsx`);
+    }
+  }catch(e){ toast('Excel','No se pudo generar; intenta de nuevo.'); }
+  b.disabled = false; b.textContent = 'Descargar Excel';
+};
+
+/* ================= Callback (grupos) ================= */
+async function pintarGrupos(){
+  const pasan = RES.filter(a=>a.pasa_callback && a.grupo_baile);
+  const grupos = {}; pasan.forEach(a=>(grupos[a.grupo_baile] ||= []).push(a));
+  const claves = Object.keys(grupos).map(Number).sort((a,b)=>a-b);
+  $('#vac-grupos').textContent = claves.length ? '' : 'Todavía no hay nadie marcado para pasar a Callback; se marca en la pestaña Corte.';
+  await firmar(pasan.map(a=>a.foto_path));
+  $('#g-grupos').innerHTML = claves.map(g=>{ const l=grupos[g]; const cal=l.filter(a=>MIS[a.id+'|baile']?.estrellas).length;
+    return `<button class="grupo ${grupoSel===g?'on':''}" data-g="${g}"><div class="t">Grupo ${g}</div><div class="r">Turnos ${l[0].turno}–${l[l.length-1].turno} · calificaste ${cal}/${l.length}</div>
+      <div class="caras">${l.slice(0,6).map(a=>`<span>${a.foto_path&&FOTOS[a.foto_path]?`<img src="${FOTOS[a.foto_path]}" alt="">`:''}</span>`).join('')}</div></button>`; }).join('');
+  $$('#g-grupos [data-g]').forEach(b=>b.onclick=()=>{ grupoSel=+b.dataset.g; pintarGrupos(); setTimeout(()=>$('#grupo-sel').scrollIntoView({behavior:'smooth'}),80); });
+  if(grupoSel && grupos[grupoSel]){
+    const l = grupos[grupoSel];
+    $('#grupo-sel').style.display='block'; $('#grupo-t').textContent = `Grupo ${grupoSel} · ${l.length} personas`;
+    $('#g-grupo').innerHTML = l.map(a=>tarjeta(a,'baile')).join(''); enlazar('#g-grupo', l);
+    $('#b-llamar').onclick = async ()=>{ await SB.rpc('establecer_turno',{p_turno:l[0].turno}); toast('Turno','Se llamó al grupo '+grupoSel+': en la pantalla sale el número '+l[0].turno+'.'); };
+  } else $('#grupo-sel').style.display='none';
+}
+
+/* ================= Callback 2 ================= */
+async function pintarCallback2(){
+  const l = RES.filter(a=>a.pasa_callback2);
+  await firmar(l.map(a=>a.foto_path));
+  $('#g-callback2').innerHTML = l.map(a=>tarjeta(a,'callback2',
+    `<div class="tes" style="margin-top:.2rem">${esc(ETAPAS.canto)} <b>${fmt(a.prom_canto)}</b> · ${esc(ETAPAS.baile)} <b>${fmt(a.prom_baile)}</b>${a.super_likes?' · ♥'+a.super_likes:''}</div>`)).join('');
+  $('#vac-callback2').textContent = l.length ? '' : 'Todavía no hay nadie marcado para Callback 2; se marca en Corte, en "Baile → Callback 2".';
+  enlazar('#g-callback2', l);
+}
+
+/* PDF de fichas: una por hoja */
+$('#b-pdf').onclick = async ()=>{
+  const l = RES.filter(a=>a.pasa_callback2); if(!l.length) return toast('PDF','No hay fichas en Callback 2 todavía.');
+  const w = window.open('', '_blank'); if(!w) return toast('PDF','Permite las ventanas emergentes para descargar el PDF.');
+  w.document.write('<p style="font-family:sans-serif;padding:2rem">Preparando fichas…</p>');
+  const ids = l.map(a=>a.id);
+  const full = [], notas = [];
+  for(let i=0;i<ids.length;i+=150){
+    const c = ids.slice(i,i+150);
+    const [f, n] = await Promise.all([SB.from('aspirantes').select('*').in('id', c), SB.from('notas').select('aspirante_id,autor_id,etapa,texto').in('aspirante_id', c).order('created_at')]);
+    full.push(...(f.data||[])); notas.push(...(n.data||[]));
+  }
+  await firmar(l.map(a=>a.foto_path));
+  const F = {}; full.forEach(x=>F[x.id]=x);
+  const N = {}; notas.forEach(n=>(N[n.aspirante_id] ||= []).push(n));
+  const L = arr => (arr&&arr.length)?arr.map(esc).join(', '):'—';
+  const pags = l.map(a=>{ const d=F[a.id]||{}; const votos=Object.entries(a.votos_personaje||{}).sort((x,y)=>y[1]-x[1]);
+    return `<section class="pag"><div class="top"><div><div class="sa">Spring Awakening México · ${esc(ETAPAS.callback2)}</div><h1>${esc(a.nombre_completo)}</h1>
+      <div class="sub">${esc(a.tesitura||'')} · ${esc(a.track||'')} · ${a.edad} años${d.altura_cm?' · '+d.altura_cm+' cm':''}</div></div><div class="numero">${a.turno}</div></div>
+      <div class="cuerpo"><div class="foto">${a.foto_path&&FOTOS[a.foto_path]?`<img src="${FOTOS[a.foto_path]}">`:''}</div><div class="datos">
+        <div class="proms"><div><b>${fmt(a.prom_canto)}</b>${esc(ETAPAS.canto)}</div><div><b>${fmt(a.prom_baile)}</b>${esc(ETAPAS.baile)}</div><div><b>${fmt(a.prom_callback2)}</b>${esc(ETAPAS.callback2)}</div><div><b>${a.super_likes||0}</b>Super likes</div></div>
+        <p><b>Personajes:</b> ${votos.length?votos.map(([p,n])=>`${esc(p)} ${n}`).join(' · '):'—'}</p>
+        <p><b>Baile:</b> ${L(d.baile)}</p><p><b>Habilidades:</b> ${L(d.habilidades)}</p>
+        <p><b>Proyectos:</b> ${(d.proyectos||[]).map(p=>esc([p.nombre,p.lugar].filter(Boolean).join(' · '))).join(' | ')||'—'}</p>
+        <p><b>Formación:</b> ${(d.formacion||[]).map(p=>esc([p.grado,p.escuela].filter(Boolean).join(' · '))).join(' | ')||'—'}</p>
+        <p><b>Teléfono:</b> ${esc(d.telefono||'—')} · <b>Playera:</b> ${esc(d.talla_playera||'—')} · <b>Zapato:</b> ${esc(d.talla_zapato||'—')}</p>
+      </div></div>
+      ${(N[a.id]||[]).length?`<div class="notas"><b>Notas de los jueces</b>${N[a.id].map(n=>`<p>${esc(STAFF[n.autor_id]||'Juez')} (${esc(ETAPAS[n.etapa]||'')}): ${esc(n.texto)}</p>`).join('')}</div>`:''}
+      <div class="mano"><b>Notas a mano</b>${'<div class="ln"></div>'.repeat(9)}</div></section>`; }).join('');
+  w.document.open();
+  w.document.write(`<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><title>Fichas Callback 2 · Spring Awakening</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>@page{size:Letter;margin:12mm}*{box-sizing:border-box;margin:0;padding:0;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  body{font-family:Manrope,sans-serif;color:#2a2622;font-size:12.5px;background:#fff}
+  .pag{break-after:page;padding:2mm;min-height:250mm;display:flex;flex-direction:column}.pag:last-child{break-after:auto}
+  .top{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px solid #2a2622;padding-bottom:4mm;margin-bottom:5mm;break-after:avoid}
+  .sa{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#5d5750}h1{font-family:'Cormorant Garamond',serif;font-size:30px;line-height:1.1;margin:1mm 0;break-after:avoid}
+  .sub{color:#5d5750}.numero{font-family:'Cormorant Garamond',serif;font-size:64px;line-height:.9;background:#e6b7b0;border-radius:4px 16px 16px 16px;padding:3mm 6mm}
+  .cuerpo{display:flex;gap:6mm;break-inside:avoid}.foto{width:58mm;height:77mm;border-radius:3mm;overflow:hidden;background:#efe7d8;flex-shrink:0}.foto img{width:100%;height:100%;object-fit:cover}
+  .datos{flex:1}.datos p{margin-bottom:2.2mm;orphans:3;widows:3}.proms{display:grid;grid-template-columns:repeat(4,1fr);gap:2mm;margin-bottom:4mm}
+  .proms div{background:#f4f1ea;border-radius:2mm;padding:2mm;text-align:center;font-size:10px;color:#5d5750}.proms b{display:block;font-family:'Cormorant Garamond',serif;font-size:24px;color:#2a2622}
+  .notas{margin-top:5mm;background:#f4f1ea;border-radius:3mm;padding:3mm 4mm;break-inside:avoid}.notas p{margin-top:1.5mm;orphans:3;widows:3}
+  .mano{margin-top:6mm;flex:1}.ln{border-bottom:1px solid #cdbb9c;height:9mm}a[href]:after{content:none}</style></head><body>${pags}</body></html>`);
+  w.document.close();
+  const imgs = [...w.document.images]; await Promise.all(imgs.map(i=>i.complete?1:new Promise(r=>{i.onload=i.onerror=r;})));
+  setTimeout(()=>{ w.focus(); w.print(); }, 500);
+};
+
+/* ================= Chat ================= */
+let chatAbierto = false, sinLeer = 0;
+function burbuja(m){ const mio = m.autor_id===yo.id;
+  return `<div class="burb ${mio?'mio':''}">${mio?'':`<div class="q">${esc(STAFF[m.autor_id]||'Staff')}</div>`}${esc(m.texto)}<div class="h">${hora(m.created_at)}</div></div>`; }
+async function iniciarChat(){
+  const {data} = await SB.from('chat_mensajes').select('id,autor_id,texto,created_at').order('created_at',{ascending:false}).limit(100);
+  $('#chat-msgs').innerHTML = (data||[]).reverse().map(burbuja).join('') || '<div class="vacio">Aquí se pueden mandar mensajes entre el lobby y el teatro.</div>';
+  SB.channel('chat').on('postgres_changes',{event:'INSERT',schema:'public',table:'chat_mensajes'}, async p=>{
+    const m = p.new;
+    if(!STAFF[m.autor_id]){ const {data:s}=await SB.from('staff').select('id,nombre').eq('id',m.autor_id).maybeSingle(); if(s) STAFF[s.id]=s.nombre; }
+    const v = $('#chat-msgs .vacio'); if(v) v.remove();
+    $('#chat-msgs').insertAdjacentHTML('beforeend', burbuja(m)); $('#chat-msgs').scrollTop = 1e9;
+    if(m.autor_id!==yo.id && !chatAbierto){ sinLeer++; $('#chat-bdg').textContent=sinLeer; $('#chat-bdg').style.display='flex'; toast(STAFF[m.autor_id]||'Mensaje', m.texto, abrirChat); }
+  }).subscribe();
+}
+function abrirChat(){ chatAbierto=true; $('#chat').classList.add('on'); sinLeer=0; $('#chat-bdg').style.display='none'; $('#chat-msgs').scrollTop=1e9; setTimeout(()=>$('#chat-in').focus(),50); }
+$('#chat-btn').onclick = ()=>{ if(chatAbierto){ $('#chat').classList.remove('on'); chatAbierto=false; } else abrirChat(); };
+$('#chat-x').onclick = ()=>{ $('#chat').classList.remove('on'); chatAbierto=false; };
+$('#f-chat').addEventListener('submit', async e=>{
+  e.preventDefault(); const t=$('#chat-in').value.trim(); if(!t) return; $('#chat-in').value='';
+  const {error} = await SB.from('chat_mensajes').insert({autor_id:yo.id, texto:t});
+  if(error){ $('#chat-in').value=t; toast('Chat','No se envió; revisa tu conexión.'); }
+});
+
+/* ================= Usuarios ================= */
 async function cargarUsuarios(){
   const {data} = await SB.from('staff').select('id,nombre,usuario,rol,activo').order('created_at');
+  (data||[]).forEach(s=>STAFF[s.id]=s.nombre);
   $('#lista-u').innerHTML = (data||[]).map(u=>`<div class="fila-u ${u.activo?'':'inactivo'}">
       <div><div class="n">${esc(u.nombre)}</div><div class="u">${esc(u.usuario||'')}</div></div>
       <span class="r ${u.rol}">${u.rol==='admin'?'Admin':'Staff'}</span>
       ${u.id!==yo.id ? `<button class="switch" data-u="${u.id}" data-a="${u.activo}">${u.activo?'Desactivar':'Activar'}</button>` : ''}
     </div>`).join('');
-  $$('#lista-u .switch').forEach(b=>b.onclick = async ()=>{
-    await SB.from('staff').update({activo: b.dataset.a!=='true'}).eq('id', b.dataset.u); cargarUsuarios();
-  });
+  $$('#lista-u .switch').forEach(b=>b.onclick = async ()=>{ await SB.from('staff').update({activo: b.dataset.a!=='true'}).eq('id', b.dataset.u); cargarUsuarios(); });
 }
 $('#f-usuario').addEventListener('submit', async e=>{
   e.preventDefault(); const m=$('#m-usuario'); m.className='msg'; m.textContent='';
@@ -350,13 +905,13 @@ $('#f-usuario').addEventListener('submit', async e=>{
   $('#b-usuario').disabled = true;
   const {data, error} = await SB.functions.invoke('crear-usuario', {body});
   $('#b-usuario').disabled = false;
-  let err = error ? (await error.context?.json?.().catch(()=>null))?.error || 'No se pudo crear el usuario.' : data?.error;
+  let err = error ? ((await error.context?.json?.().catch(()=>null))?.error || 'No se pudo crear el usuario.') : data?.error;
   if(err){ m.className='msg mal'; m.textContent=err; return; }
   m.className='msg bien'; m.textContent=`Listo: ${body.nombre} ya puede entrar con el usuario "${data.usuario}".`;
   $('#f-usuario').reset(); cargarUsuarios();
 });
 
-/* ---------- Contraseña ---------- */
+/* ================= Contraseña ================= */
 $('#f-pass').addEventListener('submit', async e=>{
   e.preventDefault(); const m=$('#m-pass'); m.className='msg';
   const a=$('#p1').value, b=$('#p2').value;
