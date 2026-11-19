@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Turno actual · Spring Awakening México</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--papel:#f4f1ea;--tinta:#2a2622;--tinta2:#5d5750;--gris:#9a938a;--linea:#ddd6ca;--blanco:#fffdf8;--rosa:#e6b7b0;--rosa-osc:#b5655c;--ok:#4f7a5a}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Manrope',sans-serif;color:var(--tinta);background:var(--papel);
+    background-image:radial-gradient(rgba(120,100,80,.05) 1px,transparent 1px);background-size:4px 4px;min-height:100vh;padding:2rem 1rem}
+  .wrap{max-width:520px;margin:0 auto;text-align:center}
+  .presenta{font-size:11px;letter-spacing:4px;text-transform:uppercase;color:var(--tinta2)}
+  h1{font-family:'Cormorant Garamond',serif;font-weight:600;font-size:2.4rem;line-height:1;margin:.4rem 0 1.6rem}
+  .tablero{background:var(--rosa);border-radius:4px 22px 22px 22px;padding:2rem 1rem 2.4rem;position:relative;margin-top:2rem}
+  .tablero::before{content:"";position:absolute;top:-1.6rem;left:0;width:42%;height:1.7rem;background:var(--rosa);border-radius:14px 22px 0 0}
+  .etq{font-size:13px;font-weight:700;letter-spacing:4px;text-transform:uppercase}
+  .numero{font-family:'Cormorant Garamond',serif;font-weight:600;font-size:clamp(7rem,38vw,11rem);line-height:1;margin-top:.3rem;transition:transform .3s}
+  .numero.cambio{transform:scale(1.08)}
+  .mio{background:var(--blanco);border:1px solid var(--linea);border-radius:16px;padding:1.3rem;margin-top:1.6rem}
+  .mio label{display:block;font-size:13px;font-weight:700;margin-bottom:.5rem}
+  .mio input{font:inherit;font-size:22px;font-weight:700;text-align:center;width:140px;border:1px solid var(--linea);border-radius:12px;padding:.5rem;background:var(--papel);outline:none}
+  .estado{margin-top:1rem;font-size:15px;font-weight:600;color:var(--tinta2);min-height:1.4em}
+  .estado.fila{color:var(--rosa-osc)}
+  .estado.ya{color:var(--ok)}
+  .vivo{display:inline-flex;align-items:center;gap:.4rem;font-size:12px;color:var(--gris);margin-top:1.4rem}
+  .vivo i{width:8px;height:8px;border-radius:50%;background:var(--ok);display:inline-block;animation:p 1.6s infinite}
+  .vivo.off i{background:var(--gris);animation:none}
+  @keyframes p{50%{opacity:.3}}
+  @media (max-width:600px){h1{font-size:2rem}}
+  @page{size:Letter;margin:13mm}
+  @media print{*{-webkit-print-color-adjust:exact;print-color-adjust:exact}.no-print{display:none!important}a[href]:after{content:none}h1,h2{break-after:avoid}.tablero,.mio{break-inside:avoid}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="presenta">NOS Teatro · Audiciones</div>
+  <h1>Spring Awakening</h1>
+
+  <div class="tablero">
+    <div class="etq">Turno actual</div>
+    <div class="numero" id="numero">—</div>
+  </div>
+
+  <div class="mio no-print">
+    <label for="mio">¿Cuál es tu número?</label>
+    <input id="mio" type="number" inputmode="numeric" min="1" placeholder="—">
+    <div class="estado" id="estado"></div>
+  </div>
+
+  <div class="vivo" id="vivo"><i></i> <span id="vivo-t">Conectando…</span></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SB = supabase.createClient('https://lbvgwsyxuhgjpstnuqxf.supabase.co','sb_publishable_Vwa0YLndlojcJbZ6ipXAEQ_0teqwIVX');
+const $ = s => document.querySelector(s);
+let actual = 0, aviso = 20;
+try{ const g = localStorage.getItem('sa_mi_turno'); if(g) $('#mio').value = g; }catch(e){}
+
+function pintar(){
+  $('#numero').textContent = actual || '—';
+  const mio = parseInt($('#mio').value,10), e = $('#estado');
+  e.className = 'estado';
+  if(!mio || !actual){ e.textContent = mio ? 'Aún no empiezan los turnos.' : ''; return; }
+  const faltan = mio - actual;
+  if(faltan < 0){ e.className='estado ya'; e.textContent = 'Tu turno ya pasó; si no te llamaron, acércate al staff.'; }
+  else if(faltan === 0){ e.className='estado fila'; e.textContent = '¡Es tu turno!'; }
+  else if(faltan <= aviso){ e.className='estado fila'; e.textContent = `Faltan ${faltan} turnos: acércate a hacer fila.`; }
+  else e.textContent = `Faltan ${faltan} turnos; te avisamos aquí cuando sea momento de formarte.`;
+}
+$('#mio').addEventListener('input', ()=>{ try{ localStorage.setItem('sa_mi_turno', $('#mio').value); }catch(e){} pintar(); });
+
+async function cargar(){
+  const {data} = await SB.from('config').select('clave,valor').in('clave',['turno_actual','aviso_turnos']);
+  (data||[]).forEach(r=>{ if(r.clave==='turno_actual') actual = r.valor.turno||0; if(r.clave==='aviso_turnos') aviso = +r.valor||20; });
+  pintar();
+}
+cargar();
+SB.channel('turno-publico')
+  .on('postgres_changes',{event:'UPDATE',schema:'public',table:'config',filter:'clave=eq.turno_actual'}, p=>{
+    actual = p.new.valor.turno||0; pintar();
+    const n=$('#numero'); n.classList.add('cambio'); setTimeout(()=>n.classList.remove('cambio'),300);
+  })
+  .subscribe(s=>{ const on = s==='SUBSCRIBED'; $('#vivo').classList.toggle('off',!on); $('#vivo-t').textContent = on ? 'En vivo' : 'Reconectando…'; if(on) cargar(); });
+// Respaldo por si el celular se duerme
+setInterval(cargar, 30000);
+document.addEventListener('visibilitychange', ()=>{ if(!document.hidden) cargar(); });
+</script>
+</body>
+</html>
