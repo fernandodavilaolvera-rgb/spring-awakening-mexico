@@ -167,6 +167,15 @@
   .etq{font-size:12px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--tinta2)}
   .centro{text-align:center}
 
+  .lista-reg{max-height:60vh;overflow-y:auto;border:1px solid var(--linea);border-radius:12px;margin-top:.8rem}
+  .lista-reg button{display:flex;align-items:center;gap:.7rem;width:100%;text-align:left;background:var(--blanco);border:0;border-bottom:1px solid var(--linea);padding:.65rem .9rem;font-size:14px}
+  .lista-reg button:last-child{border-bottom:0}
+  .lista-reg button:hover{background:var(--papel)}
+  .lista-reg .nm{font-weight:600;flex:1}
+  .lista-reg .ts{font-size:12px;color:var(--gris)}
+  .lista-reg .tn{background:var(--tinta);color:#fff;border-radius:999px;font-size:12px;font-weight:700;min-width:1.9rem;text-align:center;padding:.15rem .45rem}
+  .lista-reg .sn{font-size:11px;color:var(--gris);font-weight:600}
+  .filtros-reg{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;margin-top:.6rem}
   /* Usuarios */
   .lista-u{background:var(--blanco);border:1px solid var(--linea);border-radius:14px;overflow:hidden;margin-bottom:1.6rem}
   .fila-u{display:flex;align-items:center;gap:.8rem;padding:.8rem 1rem;border-bottom:1px solid var(--linea)}
@@ -264,6 +273,7 @@
     <section class="vista on" id="v-lobby">
       <h2>Lobby</h2>
       <p class="ayuda">Busca a la persona por su nombre, tócala y confirma para darle su número de turno.</p>
+      <div class="acciones" style="margin:-.3rem 0 1rem"><button class="btn sec peq" id="b-registrados">Ver todos los registrados</button></div>
       <div class="buscador">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2a2622" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
         <input id="q" type="search" placeholder="Escribe un nombre…" autocomplete="off">
@@ -604,6 +614,34 @@ async function lobbyConfirmar(a){
       await cargarRes(); cargarLlegadas();
     };
   }
+}
+
+
+/* Lista de todos los registrados */
+let REG = [], filtroReg = 'todos';
+$('#b-registrados').onclick = async ()=>{
+  fichaAbierta = null;
+  $('#modal').innerHTML = '<div class="vacio">Cargando…</div>'; $('#velo').classList.add('on'); $('#velo').scrollTop = 0;
+  REG = await todo(()=>SB.from('aspirantes').select('id,nombre_completo,turno,foto_path,tesitura').order('nombre_completo'));
+  REG.sort((a,b)=>a.nombre_completo.localeCompare(b.nombre_completo,'es'));
+  const con = REG.filter(a=>a.turno).length;
+  $('#modal').innerHTML = `<button class="cerrar-x" data-x aria-label="Cerrar">✕</button>
+    <h3 class="serif" style="font-size:1.8rem;font-weight:600">Registrados</h3>
+    <p class="ayuda" style="margin:.2rem 0 .6rem"><b>${REG.length}</b> registrados · <b>${con}</b> ya llegaron · <b>${REG.length-con}</b> por llegar</p>
+    <input id="q-reg" type="search" placeholder="Filtrar por nombre…" autocomplete="off">
+    <div class="filtros-reg"><div class="seg" id="seg-reg"><button data-f="todos" class="on">Todos</button><button data-f="faltan">Por llegar</button><button data-f="llegaron">Ya llegaron</button></div></div>
+    <div class="lista-reg" id="lista-reg"></div>`;
+  $$('#modal [data-x]').forEach(b=>b.onclick=cerrar);
+  filtroReg = 'todos';
+  $$('#seg-reg button').forEach(b=>b.onclick=()=>{ filtroReg=b.dataset.f; $$('#seg-reg button').forEach(x=>x.classList.toggle('on',x===b)); pintarReg(); });
+  $('#q-reg').addEventListener('input', pintarReg);
+  pintarReg();
+};
+function pintarReg(){
+  const q = sinAcento($('#q-reg').value.trim());
+  const l = REG.filter(a => (!q || sinAcento(a.nombre_completo).includes(q)) && (filtroReg==='todos' || (filtroReg==='llegaron' ? a.turno : !a.turno)));
+  $('#lista-reg').innerHTML = l.map(a=>`<button data-r="${a.id}"><span class="nm">${esc(a.nombre_completo)}<br><span class="ts">${esc(a.tesitura||'')}</span></span>${a.turno?`<span class="tn">${a.turno}</span>`:'<span class="sn">Sin número</span>'}</button>`).join('') || '<div class="vacio">No hay nadie con ese filtro.</div>';
+  $$('#lista-reg [data-r]').forEach(b=>b.onclick=()=>{ const a=REG.find(x=>x.id===b.dataset.r); if(a) lobbyConfirmar(a); });
 }
 
 /* ================= Pasando ================= */
